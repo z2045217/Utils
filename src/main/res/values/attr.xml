@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="Module_Header">
+        <attr name="button_back_display" format="boolean" />
+        <attr name="button_city_display" format="boolean" />
+        <attr name="button_qrcode_display" format="boolean" />
+        <attr name="button_enter_display" format="boolean" />
+        <attr name="button_add_display" format="boolean" />
+        <attr name="button_share_display" format="boolean" />
+        <attr name="button_message_display" format="boolean"/>
+        <attr name="search_display" format="boolean" />
+        <attr name="header_title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="Module_Header_Dialog">
+        <attr name="header_dialog_title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="Module_PickerView">
+        <attr name="item_height" format="integer" />
+        <attr name="text_size" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundImageView">
+        <attr name="bottom_isround" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundProgressBar">
+        <attr name="roundColor" format="color" />
+        <attr name="roundProgressColor" format="color" />
+        <attr name="roundWidth" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="max" format="integer" />
+        <attr name="textIsDisplayable" format="boolean" />
+        <attr name="style">
+            <enum name="STROKE" value="0" />
+            <enum name="FILL" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="ChatPlayBtn">
+        <attr name="left" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="Module_ChatImageView">
+        <attr name="chat_direction" format="integer" />
+        <attr name="chat_pixels" format="dimension" />
+        <attr name="chat_arrow_down" format="dimension" />
+    </declare-styleable>
+
+</resources>
