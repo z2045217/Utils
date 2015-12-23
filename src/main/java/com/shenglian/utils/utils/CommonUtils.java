@@ -1,8 +1,5 @@
 package com.shenglian.utils.utils;
 
-import java.io.File;
-import java.security.MessageDigest;
-
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
@@ -13,9 +10,14 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.security.MessageDigest;
 
 public class CommonUtils {
 
@@ -33,10 +35,11 @@ public class CommonUtils {
 					+ "/";// filePath:/sdcard/
 		} else {
 			return Environment.getDataDirectory().getAbsolutePath() + "/data/"; // filePath:
-																				// /data/data/
+			// /data/data/
 		}
 	}
 
+	//region getAbsolutePathFromNoStandardUri(final uri mUri)
 	public static String getAbsolutePathFromNoStandardUri(final Uri mUri) {
 		String filePath = null;
 
@@ -55,11 +58,15 @@ public class CommonUtils {
 		}
 		return filePath;
 	}
+	//endregion
 
+	//region checkNetState
 	public static boolean checkNetState(final Context context) {
 		return getNetState(context) > 0;
 	}
+	//endregion
 
+	//region getNetState
 	public static int getNetState(final Context context) {
 		ConnectivityManager connManager = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -71,12 +78,12 @@ public class CommonUtils {
 			return -1;
 		}
 		switch (networkInfo.getType()) {
-		case ConnectivityManager.TYPE_WIFI:
-			return networkInfo.getState() == NetworkInfo.State.CONNECTED ? 2
-					: -1;
-		case ConnectivityManager.TYPE_MOBILE:
-			return networkInfo.getState() == NetworkInfo.State.CONNECTED ? 1
-					: -1;
+			case ConnectivityManager.TYPE_WIFI:
+				return networkInfo.getState() == NetworkInfo.State.CONNECTED ? 2
+						: -1;
+			case ConnectivityManager.TYPE_MOBILE:
+				return networkInfo.getState() == NetworkInfo.State.CONNECTED ? 1
+						: -1;
 		}
 
 		/*
@@ -91,7 +98,9 @@ public class CommonUtils {
 		 */
 		return -1;
 	}
+	//endregion
 
+	//region getVersionName
 	public static String getVersionName(final Context context) {
 		String strVversionName = "";
 		try {
@@ -105,7 +114,9 @@ public class CommonUtils {
 		}
 		return strVversionName;
 	}
+	//endregion
 
+	//region getVersionCode
 	public static int getVersionCode(final Context context) {
 		int intVersionCode = -1;
 		try {
@@ -116,11 +127,16 @@ public class CommonUtils {
 		}
 		return intVersionCode;
 	}
+	//endregion
 
+	//region showToask
 	public static void showToask(final Context context, final String tip) {
 		Toast.makeText(context, tip, Toast.LENGTH_SHORT).show();
-	}
 
+	}
+	//endregion
+
+	//region getScreenWidth
 	@SuppressWarnings("deprecation")
 	public static int getScreenWidth(final Context context) {
 		WindowManager manager = (WindowManager) context
@@ -128,7 +144,9 @@ public class CommonUtils {
 		Display display = manager.getDefaultDisplay();
 		return display.getWidth();
 	}
+	//endregion
 
+	//region getScreenHeight
 	@SuppressWarnings("deprecation")
 	public static int getScreenHeight(final Context context) {
 		WindowManager manager = (WindowManager) context
@@ -136,35 +154,23 @@ public class CommonUtils {
 		Display display = manager.getDefaultDisplay();
 		return display.getHeight();
 	}
+	//endregion
 
+	//region dip2px
 	public static int dip2px(final Context context, final float dpValue) {
 		final float scale = context.getResources().getDisplayMetrics().density;
 		return (int) (dpValue * scale + 0.5f);
 	}
+	//endregion
 
+	//region px2dip
 	public static int px2dip(final Context context, final float pxValue) {
 		final float scale = context.getResources().getDisplayMetrics().density;
 		return (int) (pxValue / scale + 0.5f);
 	}
+	//endregion
 
-	public static void setListViewHeightBasedOnChildren(final ListView listView) {
-		ListAdapter listAdapter = listView.getAdapter();
-		if (listAdapter == null) {
-			// pre-condition
-			return;
-		}
-		int totalHeight = 0;
-		for (int i = 0; i < listAdapter.getCount(); i++) {
-			View listItem = listAdapter.getView(i, null, listView);
-			listItem.measure(0, 0);
-			totalHeight += listItem.getMeasuredHeight();
-		}
-		ViewGroup.LayoutParams params = listView.getLayoutParams();
-		params.height = totalHeight
-				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-		listView.setLayoutParams(params);
-	}
-
+	//region MD5
 	public static String MD5(final String str) {
 		MessageDigest md5 = null;
 		try {
@@ -192,5 +198,65 @@ public class CommonUtils {
 		}
 		return hexValue.toString();
 	}
+	//endregion
+
+	//region setListViewHeightBasedOnChildren
+	public static void setListViewHeightBasedOnChildren(ListView listView) {
+		ListAdapter listAdapter = listView.getAdapter();
+		if (listAdapter == null) {
+			return;
+		}
+
+		int totalHeight = 0;
+		for (int i = 0, len = listAdapter.getCount(); i < len; i++) {
+			View listItem = listAdapter.getView(i, null, listView);
+			listItem.measure(0, 0);
+			totalHeight += listItem.getMeasuredHeight();
+		}
+
+		ViewGroup.LayoutParams params = listView.getLayoutParams();
+		params.height = totalHeight
+				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+		listView.setLayoutParams(params);
+	}
+	//endregion
+
+	//region setGridViewHeightBasedOnChildren
+	public static void setGridViewHeightBasedOnChildren(GridView gridView) {
+		ListAdapter listAdapter = gridView.getAdapter();
+		if (listAdapter == null) {
+			return;
+		}
+		int rows;
+		int columns=0;
+		int horizontalBorderHeight=0;
+		Class<?> clazz=gridView.getClass();
+		try {
+			Field column=clazz.getDeclaredField("mRequestedNumColumns");
+			column.setAccessible(true);
+			columns=(Integer)column.get(gridView);
+			Field horizontalSpacing=clazz.getDeclaredField("mRequestedHorizontalSpacing");
+			horizontalSpacing.setAccessible(true);
+			horizontalBorderHeight=(Integer)horizontalSpacing.get(gridView);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		if(listAdapter.getCount()%columns>0){
+			rows=listAdapter.getCount()/columns+1;
+		}else {
+			rows=listAdapter.getCount()/columns;
+		}
+		int totalHeight = 0;
+		for (int i = 0; i < rows; i++) {
+			View listItem = listAdapter.getView(i, null, gridView);
+			listItem.measure(0, 0);
+			totalHeight += listItem.getMeasuredHeight();
+		}
+		ViewGroup.LayoutParams params = gridView.getLayoutParams();
+		params.height = totalHeight+horizontalBorderHeight*(rows-1);
+		gridView.setLayoutParams(params);
+	}
+	//endregion
 
 }

@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.0.0"
+version = "1.0.4"
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-    resourcePrefix "Sunday"    //Õâ¸öËæ±ãÌî
+    resourcePrefix "Sunday"    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     defaultConfig {
         minSdkVersion 15
@@ -64,7 +64,6 @@ install {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
     compile 'com.joanzapata.iconify:android-iconify-ionicons:2.1.0'
