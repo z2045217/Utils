@@ -1,5 +1,6 @@
 package com.shenglian.utils.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -752,6 +753,69 @@ public class ImageUtils {
 		}
 		bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 		return (bitmap);
+	}
+	//endregion
+
+	//region setBitmapColor(Activity activity,int drawable,float colorRed,float colorGreen,float colorBlue,float colorTransparency)
+	public static Bitmap setBitmapColor(Activity activity,int drawable,float colorRed,float colorGreen,float colorBlue,float colorTransparency) {
+		Bitmap baseBitmap = BitmapFactory.decodeResource(activity.getResources(), drawable);
+		Bitmap afterBitmap = Bitmap.createBitmap(baseBitmap.getWidth(),
+				baseBitmap.getHeight(), baseBitmap.getConfig());
+		Canvas canvas = new Canvas(afterBitmap);
+		Paint paint = new Paint();
+		float[] src = new float[]{colorRed, 0, 0, 0, 0,
+				0, colorGreen, 0, 0, 0,
+				0, 0, colorBlue, 0, 0,
+				0, 0, 0, colorTransparency, 0};
+		ColorMatrix colorMatrix = new ColorMatrix();
+		colorMatrix.set(src);
+		paint.setColorFilter(new ColorMatrixColorFilter(src));
+		canvas.drawBitmap(baseBitmap, new Matrix(), paint);
+		return afterBitmap;
+	};
+	//endregion
+
+	//region createRepeater(Context context,int width, int drawable,int srcsize)
+	public static Bitmap createRepeater(Context context, int width, int height, int drawable, int srcsize) {
+		Bitmap src = BitmapFactory.decodeResource(context.getResources(), drawable);
+
+		float oldwidth = src.getWidth();
+		float oldheight = src.getHeight();
+		Matrix matrix = new Matrix();
+		float scaleWidth = ((float) srcsize) / oldwidth;
+		float scaleHeight = ((float) srcsize) / oldheight;
+		matrix.postScale(scaleWidth, scaleHeight);
+		src = Bitmap.createBitmap(src, 0, 0, (int) oldwidth,
+				(int) oldheight, matrix, true);
+
+		int widthcount = width / src.getWidth() + 1;
+		int heacount = height / src.getHeight() + 1;
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+
+		for (int idy = 0; idy < heacount; ++idy) {
+			for (int idx = 0; idx < widthcount; ++idx) {
+				canvas.drawBitmap(src, idx * src.getWidth(), idy * src.getHeight(), null);
+			}
+		}
+		return bitmap;
+	}
+	//endregion
+
+	//region Zoom(Bitmap bitmap, float x, float y)
+	public static Bitmap Zoom(Bitmap bitmap, float x, float y) {
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+
+		float sx = x / width;
+		float sy = y / height;
+		float scale = sx > sy ? sx : sy;
+
+		Matrix mtr = new Matrix();
+		mtr.postScale(scale, scale);
+
+		Bitmap bm = Bitmap.createBitmap(bitmap, 0, 0, width, height, mtr, true);
+		return bm;
 	}
 	//endregion
 
